@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { AdminRepo } from './admin.repo';
 import { LoginDto } from './admin.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminService {
     constructor(
-        private readonly adminRepo: AdminRepo
+        private readonly adminRepo: AdminRepo,
+        private readonly jwtService: JwtService
     ) { }
 
 
@@ -19,6 +21,7 @@ export class AdminService {
         if (!user) {
             return { message: 'User not found' };
         }
-        return user;
+        const token = this.jwtService.sign({ id: user._id });
+        return { token };
     }
 }

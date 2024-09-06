@@ -12,6 +12,9 @@ import { AdminRepo } from './admin/admin.repo';
 import { UserRepo } from './user/user.repo';
 import { GoogleSheetService } from './services/google-sheet';
 import { SendgridService } from './services/sendgrid';
+import { JwtModule } from '@nestjs/jwt';
+import { secretKey } from './auth/config';
+
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/qr-ticket'),
@@ -19,6 +22,10 @@ import { SendgridService } from './services/sendgrid';
       { name: Admin.name, schema: AdminSchema },
       { name: User.name, schema: UserSchema },
     ]),
+    JwtModule.register({
+      secret: secretKey.secret,
+      signOptions: { expiresIn: '5h' }
+    })
   ],
   controllers: [AppController, AdminController, UserController],
   providers: [AppService, AdminService, UserService, AdminRepo, UserRepo, GoogleSheetService, SendgridService],

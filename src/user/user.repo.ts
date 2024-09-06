@@ -14,8 +14,8 @@ export class UserRepo {
         return admin.save();
     }
 
-    async findOne(data: any) {
-        return this.userModel.findOne(data);
+    async findOne(data: any): Promise<User | undefined> {
+        return this.userModel.findOne(data).exec();
     }
 
     async findLast() {
@@ -28,5 +28,9 @@ export class UserRepo {
 
     async totalUserCount() {
         return this.userModel.countDocuments();
+    }
+
+    async update(data: any, userId: string) {
+        return this.userModel.updateOne({ _id: userId }, data);
     }
 }

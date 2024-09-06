@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AddUserDto, UserRequestDto } from './user.dto';
+import { UserRequestDto } from './user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -19,12 +20,13 @@ export class UserController {
     }
 
     @Get('/all')
+    // @UseGuards(AuthGuard)
     async getAllUsers(@Query("page") page: string, @Query("limit") limit: string) {
         return this.userService.getUserWithPagination({ page, limit });
     }
 
     @Patch('/:userId')
-    async updateUser(@Body() data: { status: string }, @Query("userId") userId: string) {
+    async updateUser(@Body() data: { status: string }, @Param("userId") userId: string): Promise<any> {
         return this.userService.updateUser(data, userId);
     }
 }

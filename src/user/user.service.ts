@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GoogleSheetService } from 'src/services/google-sheet';
 import { StringFormating } from 'src/utils/formating';
 import { SendgridService } from 'src/services/sendgrid';
+import { EmailTemplate } from 'src/utils/template';
 const QRCode = require('qrcode')
 
 @Injectable()
@@ -99,19 +100,32 @@ export class UserService {
         }
     }
 
-    async updateUser(data: { status: string }, userId: string) {
+    async updateUser(data: { status: string }, userId: string): Promise<{ message: string }> {
         try {
-            // const user = await this.userRepo.findOne({ _id: userId });
-            // user.ticketStatus = data.status;
-            // return user.save();
-            const url = 'https://facebook.com';
-            const qrCodeImage = await QRCode.toDataURL(url);
-            const image = `<img src="${qrCodeImage}" alt="QR Code"/>`;
-
-            await this.sendgridService.sendEmail({ to: "thibbatz@gmail.com", subject: "Ticket Status", html: image })
-            return { message: "User updated" }
+            const user = await this.userRepo.findOne({ _id: userId })
+            if (!user) {
+                return { message: "User not found" }
+            }
+            if (data.status === 'approved') {
+                try {
+                    const url = 'https://facebook.com/' + user.serialNumber;
+                    const qrCodeImage = await QRCode.toDataURL(url);
+                    const image = qrCodeImage.split(',')[1]
+                    const body = EmailTemplate.createTemplate({ name: user.name, url: url })
+                    await this.sendgridService.sendEmail({ to: user.email, body: body, code: String(image) })
+                } catch (error) {
+                    await this.userRepo.update({ ticketStatus: "email-error" }, userId);
+                    return { message: "User updated with error" }
+                }
+                await this.userRepo.update({ ticketStatus: data.status }, userId);
+                return { message: "User updated: " + data.status }
+            }
+            else if (data.status === 'rejected') {
+                await this.userRepo.update({ ticketStatus: data.status }, userId);
+                return { message: "User updated: " + data.status }
+            }
         } catch (error) {
-            return { message: "Error updating user" }
+            return { message: "Error updating user" + error }
         }
     }
 }
