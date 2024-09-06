@@ -10,7 +10,8 @@ import { Admin, AdminSchema } from './admin/admin.schema';
 import { User, UserSchema } from './user/user.schema';
 import { AdminRepo } from './admin/admin.repo';
 import { UserRepo } from './user/user.repo';
-
+import { GoogleSheetService } from './services/google-sheet';
+import { SendgridService } from './services/sendgrid';
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/qr-ticket'),
@@ -20,6 +21,6 @@ import { UserRepo } from './user/user.repo';
     ]),
   ],
   controllers: [AppController, AdminController, UserController],
-  providers: [AppService, AdminService, UserService, AdminRepo, UserRepo],
+  providers: [AppService, AdminService, UserService, AdminRepo, UserRepo, GoogleSheetService, SendgridService],
 })
 export class AppModule { }

@@ -3,31 +3,31 @@ import mongoose, { Document } from 'mongoose';
 @Schema()
 export class User extends Document {
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     name: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     address: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     nic: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     gender: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     career: string;
 
     @Prop({ required: true, unique: true })
     email: string;
 
-    @Prop({ required: true, unique: true })
+    @Prop({ required: false })
     serialNumber: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     docLink: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     contactNumber: string;
 
     @Prop({ required: false, default: 'pending' })
@@ -35,6 +35,9 @@ export class User extends Document {
 
     @Prop({ required: false })
     natureOfBusiness: string;
+
+    @Prop({ required: false })
+    sheetRowNumber: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

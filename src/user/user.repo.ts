@@ -17,4 +17,16 @@ export class UserRepo {
     async findOne(data: any) {
         return this.userModel.findOne(data);
     }
+
+    async findLast() {
+        return this.userModel.findOne().sort({ _id: -1 });
+    }
+
+    async findWithPagination(data: any) {
+        return this.userModel.find().limit(data.limit).skip(data.offset);
+    }
+
+    async totalUserCount() {
+        return this.userModel.countDocuments();
+    }
 }
