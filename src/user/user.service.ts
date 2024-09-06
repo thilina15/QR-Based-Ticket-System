@@ -40,7 +40,8 @@ export class UserService {
 
     async loadUser() {
         try {
-            const lastRow = await this.getLastUserRowId();
+            const lastRow = await this.getLastUserRowId()
+            console.log(lastRow)
             const rows = await this.googleSheetService.getRows({ offset: lastRow - 1, limit: 50 });
             rows.forEach(row => {
                 const userData = new UserRequestDto();
@@ -68,6 +69,10 @@ export class UserService {
     }
 
     async getLastUserRowId() {
+        const total = await this.userRepo.totalUserCount();
+        if (total < 1) {
+            return 1;
+        }
         const user = await this.userRepo.findLast();
         console.log(user.sheetRowNumber)
         return user.sheetRowNumber;
