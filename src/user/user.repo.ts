@@ -27,14 +27,14 @@ export class UserRepo {
     }
 
     async findWithPagination(data: any) {
-        return this.userModel.find().limit(data.limit).skip(data.offset);
+        return this.userModel.find({ ticketStatus: { $ne: "deleted" } }).limit(data.limit).skip(data.offset);
     }
 
     async totalUserCount() {
         return this.userModel.countDocuments();
     }
 
-    async update(data: any, userId: string) {
-        return this.userModel.updateOne({ _id: userId }, data);
+    async update(data: any, userId: string): Promise<any> {
+        return this.userModel.updateOne({ _id: userId }, data)
     }
 }

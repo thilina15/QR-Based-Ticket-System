@@ -6,6 +6,7 @@ import { GoogleSheetService } from 'src/services/google-sheet';
 import { StringFormating } from 'src/utils/formating';
 import { SendgridService } from 'src/services/sendgrid';
 import { EmailTemplate } from 'src/utils/template';
+import { TicketStatus } from 'src/utils/ticket-status';
 const QRCode = require('qrcode')
 
 @Injectable()
@@ -28,18 +29,33 @@ export class UserService {
 
         userData.docLink = StringFormating.makePublinkDocLink(data.docLink);
         userData.contactNumber = data.contactNumber;
-        userData.ticketStatus = 'pending';
+        userData.ticketStatus = TicketStatus.Pending;
         userData.natureOfBusiness = data.natureOfBusiness;
         userData.sheetRowNumber = data.sheetRowNumber;
-        const users = await this.userRepo.find({ email: data.email })
+        const users = await this.userRepo.find({ email: data.email, ticketStatus: { $ne: TicketStatus.Deleted } })
+        console.log(userData.email + " 1")
         if (users.length > 0) {
-            userData.ticketStatus = 'duplicated';
-            users.forEach(user => {
+            let isOldUserUpdated = false;
+            for (const user of users) {
                 // set user status to duplicate
-                this.userRepo.update({ ticketStatus: userData.ticketStatus }, user.id);
-            });
+                if (user.ticketStatus == TicketStatus.Approved) {
+                    isOldUserUpdated = true;
+                    await this.userRepo.update({ ticketStatus: TicketStatus.DuplicatedApproved }, user.id);
+                } else if (user.ticketStatus == TicketStatus.Pending) {
+                    isOldUserUpdated = true;
+                    await this.userRepo.update({ ticketStatus: TicketStatus.Duplicated }, user.id);
+                }
+            }
+            if (isOldUserUpdated) {
+                // same email users available to check
+                userData.ticketStatus = TicketStatus.Duplicated;
+            } else {
+                // same email users available but all are rejected
+                userData.ticketStatus = TicketStatus.Pending;
+            }
         }
         try {
+            console.log(userData.email + " 4")
             const user = await this.userRepo.create(userData);
             return user;
         } catch (error) {
@@ -114,7 +130,7 @@ export class UserService {
             if (!user) {
                 return { message: "User not found" }
             }
-            if (data.status === 'approved') {
+            if (data.status === TicketStatus.Approved) {
                 try {
                     const url = 'http://194.233.74.107:3500/?qrid=' + user.id;
                     const qrCodeImage = await QRCode.toDataURL(url);
@@ -122,14 +138,29 @@ export class UserService {
                     const body = EmailTemplate.createTemplate({ name: user.name, url: url })
                     await this.sendgridService.sendEmail({ to: user.email, body: body, code: String(image) })
                 } catch (error) {
-                    await this.userRepo.update({ ticketStatus: "email-error" }, userId);
+                    await this.userRepo.update({ ticketStatus: TicketStatus.EmailFailedApproved }, userId);
                     return { message: "User updated with error" }
                 }
                 await this.userRepo.update({ ticketStatus: data.status }, userId);
                 return { message: "User updated: " + data.status }
             }
-            else if (data.status === 'rejected') {
+            else if (data.status === TicketStatus.Rejected || data.status === TicketStatus.Deleted) {
                 await this.userRepo.update({ ticketStatus: data.status }, userId);
+                // check if user has duplicate or duplicate approved status
+                const duplications = await this.userRepo.find({ email: user.email, ticketStatus: TicketStatus.Duplicated })
+                const duplicationsApproved = await this.userRepo.find({ email: user.email, ticketStatus: TicketStatus.DuplicatedApproved })
+                const pendings = await this.userRepo.find({ email: user.email, ticketStatus: TicketStatus.Pending })
+
+                // set one any only duplication aprved to aprove status
+                if (duplications.length == 0 && duplicationsApproved.length == 1) {
+                    await this.userRepo.update({ ticketStatus: TicketStatus.Approved }, duplicationsApproved[0].id);
+                }
+
+                // set only duplicate to pending status
+                if (duplications.length == 1 && pendings.length == 0) {
+                    await this.userRepo.update({ ticketStatus: TicketStatus.Pending }, duplications[0].id);
+                }
+
                 return { message: "User updated: " + data.status }
             }
         } catch (error) {
