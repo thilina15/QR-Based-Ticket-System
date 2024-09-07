@@ -14,7 +14,6 @@ import { GoogleSheetService } from './services/google-sheet';
 import { SendgridService } from './services/sendgrid';
 import { JwtModule } from '@nestjs/jwt';
 import { secretKey } from './auth/config';
-
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/qr-ticket'),

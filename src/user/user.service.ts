@@ -7,6 +7,7 @@ import { StringFormating } from 'src/utils/formating';
 import { SendgridService } from 'src/services/sendgrid';
 import { EmailTemplate } from 'src/utils/template';
 import { TicketStatus } from 'src/utils/ticket-status';
+import { GlobalService } from 'src/utils/global';
 const QRCode = require('qrcode')
 
 @Injectable()
@@ -83,12 +84,15 @@ export class UserService {
                 await this.addUser(userData);
             }
             if (rows.length < 1) {
+                GlobalService.isLoadingUsers = false;
                 return { message: "No new data found" }
             } else {
+                GlobalService.isLoadingUsers = false;
                 return { message: rows.length + " new data added" }
             }
 
         } catch (error) {
+            GlobalService.isLoadingUsers = false;
             return { message: "Error loading data" }
         }
     }

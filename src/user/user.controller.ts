@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@ne
 import { UserService } from './user.service';
 import { UserRequestDto } from './user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { GlobalService } from 'src/utils/global';
 
 @Controller('user')
 export class UserController {
@@ -16,7 +17,12 @@ export class UserController {
 
     @Get('/load')
     async loadUsers() {
-        return this.userService.loadUser();
+        if (GlobalService.isLoadingUsers) {
+            return { message: "Loading users" };
+        } else {
+            GlobalService.isLoadingUsers = true;
+            return this.userService.loadUser();
+        }
     }
 
     @Get('/all')
