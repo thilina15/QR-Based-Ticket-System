@@ -16,7 +16,7 @@ export class UserService {
         private sendgridService: SendgridService
     ) { }
 
-    async addUser(data: UserRequestDto) {
+    async addUser(data: UserRequestDto): Promise<any> {
         let userData = new AddUserDto();
         userData.name = data.name;
         userData.address = data.address;
@@ -31,11 +31,19 @@ export class UserService {
         userData.ticketStatus = 'pending';
         userData.natureOfBusiness = data.natureOfBusiness;
         userData.sheetRowNumber = data.sheetRowNumber;
+        const users = await this.userRepo.find({ email: data.email })
+        if (users.length > 0) {
+            userData.ticketStatus = 'duplicated';
+            users.forEach(user => {
+                // set user status to duplicate
+                this.userRepo.update({ ticketStatus: userData.ticketStatus }, user.id);
+            });
+        }
         try {
             const user = await this.userRepo.create(userData);
             return user;
         } catch (error) {
-            console.log("error adding user")
+            console.log("error adding user" + error)
         }
     }
 
@@ -44,7 +52,7 @@ export class UserService {
             const lastRow = await this.getLastUserRowId()
             console.log(lastRow)
             const rows = await this.googleSheetService.getRows({ offset: lastRow - 1, limit: 50 });
-            rows.forEach(row => {
+            for (const row of rows) {
                 const userData = new UserRequestDto();
                 userData.name = row.get('Name');
                 userData.address = row.get("Address\nRes. No. & Street / City / District");
@@ -56,8 +64,8 @@ export class UserService {
                 userData.natureOfBusiness = row.get('Nature Of The Business');
                 userData.docLink = row.get('Attache Payment Slip');
                 userData.sheetRowNumber = row.rowNumber;
-                this.addUser(userData);
-            })
+                await this.addUser(userData);
+            }
             if (rows.length < 1) {
                 return { message: "No new data found" }
             } else {

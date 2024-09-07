@@ -18,6 +18,10 @@ export class UserRepo {
         return this.userModel.findOne(data).exec();
     }
 
+    async find(data: any): Promise<User[]> {
+        return this.userModel.find(data).exec();
+    }
+
     async findLast() {
         return this.userModel.findOne().sort({ _id: -1 });
     }
