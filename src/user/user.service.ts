@@ -116,7 +116,7 @@ export class UserService {
             }
             if (data.status === 'approved') {
                 try {
-                    const url = 'https://facebook.com/' + user.serialNumber;
+                    const url = 'http://194.233.74.107:3500/?qrid=' + user.id;
                     const qrCodeImage = await QRCode.toDataURL(url);
                     const image = qrCodeImage.split(',')[1]
                     const body = EmailTemplate.createTemplate({ name: user.name, url: url })
