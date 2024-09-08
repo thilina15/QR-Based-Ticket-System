@@ -6,7 +6,7 @@ require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 @Injectable()
 export class SendgridService {
-    async sendEmail(data: { to: string, code: string, body: string }): Promise<void> {
+    async sendEmail(data: { to: string, code: string, body: string, subject: string }): Promise<void> {
         try {
             let message = {
                 personalizations: [
@@ -29,7 +29,7 @@ export class SendgridService {
                     content: data.code,
                     filename: "ticket.png",
                 }],
-                subject: "qr code Notification",
+                subject: data.subject,
                 // headers: { 'Message-ID': '123liyugt789thjky68yuww' },
                 content: [
                     {

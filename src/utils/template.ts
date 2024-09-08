@@ -63,8 +63,8 @@ let template = `<!DOCTYPE html>
       }
       .ticket-image img {
         height: 300px;
-        border-radius: 8px;
         background-size: contain;
+        object-fit: cover;
       }
       .ticket-body {
         display: flex;
@@ -199,21 +199,44 @@ let template = `<!DOCTYPE html>
         flex-direction: row;
       }
       .name-field{
-        width: 20vw;
+        width: 290px; 
+        height: 20px; 
+        background-color: white;
+        border: 1px solid #ccc; 
+        margin: 0 0px;
+        text-align: center;
+        line-height: 25px; 
+        font-size: 1rem;
+        color: #333;
       }
       .textfield-container-sn{
         padding-top: 0.5rem;
+        display: flex;
+        flex-direction: row;
+        
       }
       .price-label{
         font-size: 1.2rem;
         color: #ffffff;
         font-weight: 400;
-        padding-top: 2rem;
+        padding-top: 1rem;
+        padding-left: 14rem;
       }
       .name-label{
         color: #ffffff;
         font-weight: 400;
       }
+      .sn-box {
+        width: 290px; 
+        height: 20px; 
+        background-color: white;
+        border: 1px solid #ccc; 
+        margin: 0 15px;
+        text-align: center;
+        line-height: 25px; 
+        font-size: 0.7rem;
+        color: #333;
+}
     </style>
   </head>
   <body>
@@ -259,14 +282,15 @@ let template = `<!DOCTYPE html>
           <div class="ticket-lastsection-textfield">
             <div class="textfield-container-name">
               <label for="name" class="name-label">Name:</label>
-              <input type="text" id="name" class="name-field">
+              <div class="name-field">u_name</div>
             </div>
             <div class="textfield-container-sn">
               <label for="sn" class="name-label">S/N:</label>
-              <input type="text" id="sn" class="sn-field">
-              <label for="price" class="price-label">LKR: 3500/=</label>
+              <div class="sn-box">d9c51ce2-886f-4766-b467-0b4ad21c14a9</div>
+              
              
             </div>
+            <label for="price" class="price-label">LKR: 3500/=</label>
           </div>
         </div>
       </div>
@@ -277,34 +301,59 @@ let template = `<!DOCTYPE html>
 
 puppeteer
 export class EmailTemplate {
-    static createTemplate(data: any): string {
-        return template.replace('XQRCODE', data.qr)
-    }
+  static createTemplate(data: any): string {
+    return template.replace('XQRCODE', data.qr).replace('u_name', data.name).replace('u_sn', data.serial)
+  }
 
-    static async getAttachment(htmlContent): Promise<string> {
-        // Launch a headless browser
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
+  static async getAttachment(htmlContent): Promise<string> {
+    // Launch a headless browser
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-        // Set the HTML content
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    // Set the HTML content
+    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-        // Set viewport to the desired size for the screenshot
-        // 900 600
-        await page.setViewport({
-            width: 900, height: 600
-        });
+    // Set viewport to the desired size for the screenshot
+    // 900 600
+    await page.setViewport({
+      width: 900, height: 600
+    });
 
-        // Take a screenshot as a PNG and get it as a buffer
-        const screenshotBuffer = await page.screenshot({ type: 'jpeg' });
+    // Take a screenshot as a PNG and get it as a buffer
+    const screenshotBuffer = await page.screenshot({ type: 'jpeg' });
 
-        // Close the browser
-        await browser.close();
+    // Close the browser
+    await browser.close();
 
-        // Convert the buffer to a Base64-encoded string
-        const base64Image = Buffer.from(screenshotBuffer).toString('base64')
+    // Convert the buffer to a Base64-encoded string
+    const base64Image = Buffer.from(screenshotBuffer).toString('base64')
 
-        // Return the Base64-encoded PNG
-        return base64Image;
-    }
+    // Return the Base64-encoded PNG
+    return base64Image;
+  }
+
+  static getBody(name: string): string {
+    const temp = `<p>Dear {Name},</p>
+
+<p>Congratulations! You have successfully registered for The StartUp Asia Conference 2024, organized by the Commonwealth Iconic Federation (CIF) in collaboration with the Singapore International Bosses Foundation (SIBF). We are thrilled to have you on board for this transformative event designed to empower aspiring entrepreneurs in Sri Lanka with the essential tools, knowledge, and mindset for sustainable business growth.</p>
+
+<p> Event Details: * Date: 13/09/2024 * Time: 09 am * Venue: Faculty of Graduate Studies - University of Colombo</p>
+
+<p> Ticket Information: We have attached your event ticket to this email. The ticket contains a unique QR code, which will be scanned at the entrance on the day of the event. Please ensure you have it readily available on your mobile device for quick and easy check-in.</p>
+
+<p> Important Information: * Check-In: Kindly arrive by 8.45 am for check-in or log in to the virtual event using the link provided. * Contact Information: For any questions, reach out to us at info@cifint.org</p>
+
+<p>Key Highlights of the Conference: * Engage with leading industry experts and entrepreneurs. * Discover cutting-edge strategies for startup growth. * Network with like-minded individuals and potential investors.</p>
+
+<p> We are committed to providing an impactful experience that will help you achieve your entrepreneurial goals. If you need any assistance, please feel free to contact us at +94 70 497 3909. We look forward to welcoming you to this exciting event and being part of your entrepreneurial journey!</p>
+
+<p> Warm Regards,&#8232;Udeshi Gunarathna&#8232;National Executive Director (Foreign Affairs)</p>`;
+      const body = temp.replace('{Name}', name);
+        return body;
+    
+  }
+  static getSubject(): string {
+   return "Event Confirmation: Commonwealth Iconic Federation (CIF) – StartUp Asia"
+  }
+
 }
