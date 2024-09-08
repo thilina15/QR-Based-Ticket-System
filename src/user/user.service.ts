@@ -146,7 +146,7 @@ export class UserService {
                     await this.sendgridService.sendEmail({ to: user.email, body: body, code: attachment, subject: subject })
                 } catch (error) {
                     await this.userRepo.update({ ticketStatus: TicketStatus.EmailFailedApproved }, userId);
-                    return { message: "User updated with error" }
+                    return { message: "User updated with error" + error }
                 }
                 await this.userRepo.update({ ticketStatus: data.status }, userId);
                 return { message: "User updated: " + data.status }
