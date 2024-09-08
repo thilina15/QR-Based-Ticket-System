@@ -27,11 +27,20 @@ export class UserRepo {
     }
 
     async findWithPagination(data: any) {
-        return this.userModel.find({ ticketStatus: { $ne: "deleted" } }).limit(data.limit).skip(data.offset);
+        if (data.status == "all") {
+            // return this.userModel.find().limit(data.limit).skip(data.offset);
+            return this.userModel.find({ ticketStatus: { $ne: "deleted" } }).limit(data.limit).skip(data.offset);
+        } else {
+            return this.userModel.find({ ticketStatus: data.status }).limit(data.limit).skip(data.offset);
+        }
     }
 
-    async totalUserCount() {
-        return this.userModel.countDocuments();
+    async totalUserCount(ticketStatus: string): Promise<number> {
+        if (ticketStatus == "all") {
+            return this.userModel.countDocuments();
+        } else {
+            return this.userModel.countDocuments({ ticketStatus });
+        }
     }
 
     async update(data: any, userId: string): Promise<any> {

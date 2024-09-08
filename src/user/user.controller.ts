@@ -27,8 +27,8 @@ export class UserController {
 
     @Get('/all')
     // @UseGuards(AuthGuard)
-    async getAllUsers(@Query("page") page: string, @Query("limit") limit: string) {
-        return this.userService.getUserWithPagination({ page, limit });
+    async getAllUsers(@Query("page") page: string, @Query("limit") limit: string, @Query("status") status?: string): Promise<any> {
+        return this.userService.getUserWithPagination({ page, limit, status });
     }
 
     @Patch('/:userId')

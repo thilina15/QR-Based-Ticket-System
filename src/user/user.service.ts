@@ -98,7 +98,7 @@ export class UserService {
     }
 
     async getLastUserRowId() {
-        const total = await this.userRepo.totalUserCount();
+        const total = await this.userRepo.totalUserCount("all");
         if (total < 1) {
             return 1;
         }
@@ -107,15 +107,15 @@ export class UserService {
         return user.sheetRowNumber;
     }
 
-    async getUserWithPagination(data: { limit: string, page: string }) {
+    async getUserWithPagination(data: { limit: string, page: string, status: string }): Promise<any> {
         const limit = Number(data.limit);
         const page = Number(data.page);
-        const totalUsersCount = await this.userRepo.totalUserCount();
+        const totalUsersCount = await this.userRepo.totalUserCount(data.status);
         const totalPages = Math.ceil(totalUsersCount / limit)
         const hasNextPage = page * limit < totalUsersCount
         const hasPrevPage = page > 1
         const currentPage = page
-        const users = await this.userRepo.findWithPagination({ limit: data.limit, offset: (page - 1) * limit });
+        const users = await this.userRepo.findWithPagination({ limit: data.limit, offset: (page - 1) * limit, status: data.status });
 
         return {
             users,
