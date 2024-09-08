@@ -334,20 +334,35 @@ export class EmailTemplate {
 
   static getBody(name: string): string {
     const temp = `<p>Dear {Name},</p>
-
+<p><br></p>
 <p>Congratulations! You have successfully registered for The StartUp Asia Conference 2024, organized by the Commonwealth Iconic Federation (CIF) in collaboration with the Singapore International Bosses Foundation (SIBF). We are thrilled to have you on board for this transformative event designed to empower aspiring entrepreneurs in Sri Lanka with the essential tools, knowledge, and mindset for sustainable business growth.</p>
-
-<p> Event Details: * Date: 13/09/2024 * Time: 09 am * Venue: Faculty of Graduate Studies - University of Colombo</p>
-
-<p> Ticket Information: We have attached your event ticket to this email. The ticket contains a unique QR code, which will be scanned at the entrance on the day of the event. Please ensure you have it readily available on your mobile device for quick and easy check-in.</p>
-
-<p> Important Information: * Check-In: Kindly arrive by 8.45 am for check-in or log in to the virtual event using the link provided. * Contact Information: For any questions, reach out to us at info@cifint.org</p>
-
-<p>Key Highlights of the Conference: * Engage with leading industry experts and entrepreneurs. * Discover cutting-edge strategies for startup growth. * Network with like-minded individuals and potential investors.</p>
-
-<p> We are committed to providing an impactful experience that will help you achieve your entrepreneurial goals. If you need any assistance, please feel free to contact us at +94 70 497 3909. We look forward to welcoming you to this exciting event and being part of your entrepreneurial journey!</p>
-
-<p> Warm Regards,&#8232;Udeshi Gunarathna&#8232;National Executive Director (Foreign Affairs)</p>`;
+<p><br></p>
+<p><br></p>
+<p>Event Details:</p>
+<p>* Date: 13/09/2024</p>
+<p>* Time: 09 am</p>
+<p>* Venue: Faculty of Graduate Studies - University of Colombo&nbsp;</p>
+<p><br></p>
+<p><br></p>
+<p>Ticket Information: We have attached your event ticket to this email. The ticket contains a unique QR code, which will be scanned at the entrance on the day of the event. Please ensure you have it readily available on your mobile device for quick and easy check-in.</p>
+<p><br></p>
+<p><br></p>
+<p>Important Information:</p>
+<p>* Check-In: Kindly arrive by 8.45 am for check-in or log in to the virtual event using the link provided.</p>
+<p>* Contact Information: For any questions, reach out to us at <a data-fr-linked="true" href="mailto:info@cifint.org">info@cifint.org</a></p>
+<p><br></p>
+<p>Key Highlights of the Conference:</p>
+<p>* Engage with leading industry experts and entrepreneurs.</p>
+<p>* Discover cutting-edge strategies for startup growth.</p>
+<p>* Network with like-minded individuals and potential investors.</p>
+<p><br></p>
+<p><br></p>
+<p>We are committed to providing an impactful experience that will help you achieve your entrepreneurial goals. If you need any assistance, please feel free to contact us at +94 70 497 3909.</p>
+<p>We look forward to welcoming you to this exciting event and being part of your entrepreneurial journey!</p>
+<p><br></p>
+<p><br></p>
+<p>Warm Regards,</p>
+<p>Udeshi Gunarathna National Executive Director (Foreign Affairs)</p>`;
       const body = temp.replace('{Name}', name);
         return body;
     
