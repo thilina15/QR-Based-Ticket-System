@@ -316,7 +316,7 @@ export class EmailTemplate {
     // Set viewport to the desired size for the screenshot
     // 900 600
     await page.setViewport({
-      width: 900, height: 600
+      width: 1200, height: 600
     });
 
     // Take a screenshot as a PNG and get it as a buffer
