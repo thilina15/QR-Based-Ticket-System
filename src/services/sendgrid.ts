@@ -19,12 +19,12 @@ export class SendgridService {
                     }
                 ],
                 from: {
-                    email: "info@tufebum.xyz",
-                    name: "Ticket System"
+                    email: "noreply@cifint.org",
+                    name: "StartUp Asia"
                 },
-                replyTo: {
-                    email: "info@tufebum.xyz"
-                },
+                // replyTo: {
+                //     email: "info@tufebum.xyz"
+                // },
                 attachments: [{
                     content: data.code,
                     filename: "ticket.png",
