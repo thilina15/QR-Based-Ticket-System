@@ -307,7 +307,7 @@ export class EmailTemplate {
 
   static async getAttachment(htmlContent): Promise<string> {
     // Launch a headless browser
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
     const page = await browser.newPage();
 
     // Set the HTML content
