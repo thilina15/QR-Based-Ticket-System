@@ -62,7 +62,7 @@ let template = `<!DOCTYPE html>
         flex-direction: row;
       }
       .ticket-image img {
-        height: 300px;
+        height: 377px;
         background-size: contain;
         object-fit: cover;
       }
@@ -141,18 +141,18 @@ let template = `<!DOCTYPE html>
       .box-right-nameone{
         margin: 0;
         padding: 0;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         color: #2379d4;
-        font-weight: 700;
-        letter-spacing: 2px;
+        font-weight: 800;
+        letter-spacing: -0px;
       }
       .box-right-nametwo{
         margin: 0;
         padding: 0;
-        font-size: 2rem;
+        font-size: 1.8rem;
         color: #2379d4;
         font-weight: 800;
-        letter-spacing: 2px;
+        letter-spacing: -1px;
       }
       .box-right-namethree{
         margin: 0;
@@ -172,7 +172,7 @@ let template = `<!DOCTYPE html>
       }
       .ticket-body-middlesection-qr {
         text-align: center; 
-        margin-left: 3vw;
+        margin-left: 2.7vw;
       }
 
       .qr-code {
@@ -190,7 +190,7 @@ let template = `<!DOCTYPE html>
         font-weight: 700;
       }
       .ticket-lastsection-textfield{
-        margin: 1rem 0 1rem 2rem;
+        margin: 1rem 0 1rem 1rem;
         display: flex;
         flex-direction: column;
       }
@@ -199,7 +199,7 @@ let template = `<!DOCTYPE html>
         flex-direction: row;
       }
       .name-field{
-        width: 290px; 
+        width: 310px; 
         height: 20px; 
         background-color: white;
         border: 1px solid #ccc; 
@@ -216,7 +216,7 @@ let template = `<!DOCTYPE html>
         
       }
       .price-label{
-        font-size: 1.2rem;
+        font-size: 1rem;
         color: #ffffff;
         font-weight: 400;
         padding-top: 1rem;
@@ -227,7 +227,7 @@ let template = `<!DOCTYPE html>
         font-weight: 400;
       }
       .sn-box {
-        width: 290px; 
+        width: 310px; 
         height: 20px; 
         background-color: white;
         border: 1px solid #ccc; 
@@ -262,10 +262,10 @@ let template = `<!DOCTYPE html>
               </div>
               <div class="box-divider"></div>
               <div class="box-right">
-                <div class="box-right-nameone">NATIONAL</div>
-                <div class="box-right-nametwo">YOUTH</div>
-                <div class="box-right-namethree">CENTRE</div>
-                <div class="box-right-namefour">MAHARAGAMA</div>
+                <div class="box-right-nameone">Faculty of</div>
+                <div class="box-right-nametwo">Graduate</div>
+                <div class="box-right-namethree">Studies</div>
+                <!-- <div class="box-right-namefour">MAHARAGAMA</div> -->
               </div>
               <div>
             </div>
@@ -286,7 +286,7 @@ let template = `<!DOCTYPE html>
             </div>
             <div class="textfield-container-sn">
               <label for="sn" class="name-label">S/N:</label>
-              <div class="sn-box">d9c51ce2-886f-4766-b467-0b4ad21c14a9</div>
+              <div class="sn-box">u_sn</div>
               
              
             </div>
@@ -297,6 +297,7 @@ let template = `<!DOCTYPE html>
     </div>
   </body>
 </html>
+
 `
 
 puppeteer
