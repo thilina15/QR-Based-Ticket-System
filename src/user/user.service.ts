@@ -139,8 +139,10 @@ export class UserService {
                     const url = 'http://194.233.74.107:3500/?qrid=' + user.id;
                     const qrCodeImage = await QRCode.toDataURL(url);
                     const image = qrCodeImage.split(',')[1]
-                    const body = EmailTemplate.createTemplate({ name: user.name, url: url })
-                    await this.sendgridService.sendEmail({ to: user.email, body: body, code: String(image) })
+                    const attTemplate = EmailTemplate.createTemplate({ name: user.name, qr: qrCodeImage, serial: user.serialNumber })
+                    const attachment = await EmailTemplate.getAttachment(attTemplate)
+                    const body = "your ticket details is attached"
+                    await this.sendgridService.sendEmail({ to: user.email, body: body, code: attachment })
                 } catch (error) {
                     await this.userRepo.update({ ticketStatus: TicketStatus.EmailFailedApproved }, userId);
                     return { message: "User updated with error" }

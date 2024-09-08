@@ -27,7 +27,7 @@ export class SendgridService {
                 },
                 attachments: [{
                     content: data.code,
-                    filename: "qr.png",
+                    filename: "ticket.png",
                 }],
                 subject: "qr code Notification",
                 // headers: { 'Message-ID': '123liyugt789thjky68yuww' },
