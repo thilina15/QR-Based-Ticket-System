@@ -8,6 +8,7 @@ import { SendgridService } from 'src/services/sendgrid';
 import { EmailTemplate } from 'src/utils/template';
 import { TicketStatus } from 'src/utils/ticket-status';
 import { GlobalService } from 'src/utils/global';
+import { stat } from 'fs';
 const QRCode = require('qrcode')
 
 @Injectable()
@@ -111,6 +112,9 @@ export class UserService {
         const limit = Number(data.limit);
         const page = Number(data.page);
         const totalUsersCount = await this.userRepo.totalUserCount(data.status);
+        const approvedUsersCount = await this.userRepo.totalUserCount(TicketStatus.Approved);
+        const rejectedUsersCount = await this.userRepo.totalUserCount(TicketStatus.Rejected);
+        const pendingUsersCount = await this.userRepo.totalUserCount(TicketStatus.Pending);
         const totalPages = Math.ceil(totalUsersCount / limit)
         const hasNextPage = page * limit < totalUsersCount
         const hasPrevPage = page > 1
@@ -124,6 +128,12 @@ export class UserService {
                 hasNextPage,
                 hasPrevPage,
                 currentPage
+            },
+            stats: {
+                totalUsersCount,
+                approvedUsersCount,
+                rejectedUsersCount,
+                pendingUsersCount
             }
         }
     }
